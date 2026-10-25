@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoFix-Agent | Autonomous Code Reviewer</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 py-4 px-8 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wider text-blue-400">⚡ AutoFix-Agent</h1>
+            <span class="text-xs bg-blue-900 text-blue-300 px-3 py-1 rounded-full border border-blue-700">AI-Powered Code Refactoring</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+
+        <!-- Left Box: Input Code -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col shadow-lg">
+            <label for="codeInput" class="block text-sm font-semibold mb-2 text-gray-300">Enter Your Buggy Python Code:</label>
+            <textarea id="codeInput" rows="15" class="w-full bg-gray-900 border border-gray-700 rounded p-3 text-sm font-mono text-green-400 focus:outline-none focus:border-blue-500 resize-none" placeholder="# Paste your buggy code here...&#10;def add(a, b):&#10;    return a + b"></textarea>
+
+            <button id="analyzeBtn" onclick="submitCode()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200 flex justify-center items-center">
+                <span>Analyze & Fix Code</span>
+            </button>
+        </div>
+
+        <!-- Right Box: Output Analysis -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col shadow-lg">
+            <label class="block text-sm font-semibold mb-2 text-gray-300">AI Review & Refactored Output:</label>
+            <div id="outputContainer" class="w-full h-[385px] bg-gray-900 border border-gray-700 rounded p-4 text-sm font-mono text-gray-300 overflow-y-auto whitespace-pre-wrap">
+                <span class="text-gray-500 italic">AI analysis results and fixed code will appear here...</span>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center">
+                <span id="syntaxStatus" class="text-xs text-gray-400">Status: Ready</span>
+                <button onclick="copyOutput()" class="bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs py-1.5 px-3 rounded transition duration-200">Copy Refactored Code</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-3 text-center text-xs text-gray-400">
+        AutoFix-Agent Portfolio Project &bull; Built with Flask, PostgreSQL & Gemini AI
+    </footer>
+
+    <!-- JavaScript for Handling API Request -->
+    <script>
+        async function submitCode() {
+            const code = document.getElementById('codeInput').value;
+            const outputContainer = document.getElementById('outputContainer');
+            const syntaxStatus = document.getElementById('syntaxStatus');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+
+            if (!code.trim()) {
+                alert("Please enter some code to analyze!");
+                return;
+            }
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = "Analyzing...";
+            outputContainer.innerHTML = "<span class='text-yellow-400 animate-pulse'>AI agent is reviewing your code and checking syntax...</span>";
+            syntaxStatus.innerText = "Status: Processing...";
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    outputContainer.innerHTML = data.analysis;
+                    if (data.syntax_valid) {
+                        syntaxStatus.innerText = "Status: Syntax Validated Successfully ✔";
+                        syntaxStatus.className = "text-xs text-green-400";
+                    } else {
+                        syntaxStatus.innerText = `Status: Syntax Error Found ❌`;
+                        syntaxStatus.className = "text-xs text-red-400";
+                    }
+                } else {
+                    outputContainer.innerHTML = `<span class='text-red-400'>Error: ${data.error}</span>`;
+                    syntaxStatus.innerText = "Status: Failed ❌";
+                }
+            } catch (err) {
+                outputContainer.innerHTML = `<span class='text-red-400'>Network Error: ${err.message}</span>`;
+                syntaxStatus.innerText = "Status: Error ❌";
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = "Analyze & Fix Code";
+            }
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('outputContainer').innerText;
+            navigator.clipboard.writeText(outputText).then(() => {
+                alert("Output copied to clipboard!");
+            });
+        }
+    </script>
+
+</body>
+</html>
