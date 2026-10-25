@@ -52,9 +52,8 @@ The frontend is built with HTML, JavaScript, and Tailwind CSS. Users can:
 ### 🔌 Flask API
 Provides a Flask backend with an `/analyze` endpoint that accepts JSON requests and returns analysis results.
 
-### 🗄️ SQLite Database Helper
-The project includes a SQLite module that can create a `code_audits` table for storing source code, detected issues, refactored code, and timestamps.
-> *Note: The database helper is not currently integrated into the active `/analyze` route, so analysis results are not saved through the current workflow.*
+### Result save 
+after analyze result save with upload code & auto fix code in txt file .
 
 ### 🔐 Environment-Based API Key
 Loads the Gemini API key from a local `.env` file using `python-dotenv`, keeping credentials separate from the application source code.
