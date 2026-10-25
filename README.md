@@ -98,8 +98,6 @@ AutoFix-Agent/
 │   ├── analyzer.py
 │   └── validator.py
 ├── agent_env/
-├── database/
-│   └── models.py
 ├── fixed_codes/
 │   └── fixed_code_202610...py
 ├── templates/
