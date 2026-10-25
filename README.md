@@ -91,27 +91,21 @@ Frontend displays the results
 User reviews and copies the output
 
 
-
-
-
+📁 Project Structure
 
 AutoFix-Agent/
-│
 ├── agent/
-│   ├── __pycache__/
-│   ├── analyzer.py          # Gemini API integration and code review
-│   └── validator.py         # Python syntax validation using AST
-│
+│   ├── analyzer.py
+│   └── validator.py
+├── agent_env/
 ├── database/
-│   ├── __pycache__/
-│   └── models.py            # SQLite connection and table initialization
-│
+│   └── models.py
+├── fixed_codes/
+│   └── fixed_code_202610...py
 ├── templates/
-│   └── index.html           # Web frontend
-│
-├── agent_env/               # Local virtual environment
-├── .env                     # Gemini API key (do not commit)
-├── .gitignore               # Files excluded from Git
-├── app.py                   # Main Flask application
-├── requirements.txt         # Python dependencies
-└── README.md                # Project documentation
+│   └── index.html
+├── .env
+├── .gitignore
+├── app.py
+├── README.md
+└── requirements.txt
